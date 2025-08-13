@@ -1,69 +1,47 @@
 class Solution {
-   public boolean isSafe(char[][] board, int row, int col, int number) {
-    //column check
-       for(int i=0; i<board.length; i++) {
-           if(board[i][col] == (char)(number+'0')) {
-               return false;
-           }
-       }
-      //row check
-       for(int j=0; j<board.length; j++) {
-           if(board[row][j] == (char)(number+'0')) {
-               return false;
-           }
-       }
-      //grid check
-       int sr = 3 * (row/3);
-       int sc = 3 * (col/3);
-      
-       for(int i=sr; i<sr+3; i++) {
-           for(int j=sc; j<sc+3; j++) {
-               if(board[i][j] == (char)(number+'0')) {
-                   return false;
-               }
-           }
-       }//checked all three cases....      
-       return true;
-   }
-  
-   public boolean helper(char[][] board, int row, int col) {
-       if(row == board.length) {
-           return true;
-       }// if row comes to the last positon then we got the all numbers
-      
-       int nrow = 0;
-       int ncol = 0;
-      // Traversal
-       if(col == board.length-1) {
-           nrow = row + 1; // for moving in next row
-           ncol = 0;
-       } else {    //for moving in next column
-           nrow = row;
-           ncol = col + 1;
-       }
-      // checking the empty places
-       if(board[row][col] != '.') {
-           if(helper(board, nrow, ncol)) {
-               return true;
-           }
-       } else {
-          
-           //filling the empty place
-           for(int i=1; i<=9; i++) {
-               if(isSafe(board, row, col, i)) {
-                   board[row][col] = (char)(i+'0');
-                   if(helper(board, nrow, ncol))
-                       return true;
-                   else
-                        board[row][col] = '.';
-               }
-           }
-       }
-                     
-       return false;
-   }
-  
-   public void solveSudoku(char[][] board) {
-       helper(board, 0, 0);
-   }
-}
+public:
+    bool isSafe(vector<vector<char>>& board, int row, int col, int number) {
+        for (int i = 0; i < 9; i++) {
+            if (board[i][col] == (char)(number + '0')) return false;
+        }
+        for (int j = 0; j < 9; j++) {
+            if (board[row][j] == (char)(number + '0')) return false;
+        }
+        int sr = 3 * (row / 3);
+        int sc = 3 * (col / 3);
+        for (int i = sr; i < sr + 3; i++) {
+            for (int j = sc; j < sc + 3; j++) {
+                if (board[i][j] == (char)(number + '0')) return false;
+            }
+        }
+        return true;
+    }
+
+    bool helper(vector<vector<char>>& board, int row, int col) {
+        if (row == 9) return true;
+        int nrow, ncol;
+        if (col == 8) {
+            nrow = row + 1;
+            ncol = 0;
+        } else {
+            nrow = row;
+            ncol = col + 1;
+        }
+        if (board[row][col] != '.') {
+            return helper(board, nrow, ncol);
+        } else {
+            for (int i = 1; i <= 9; i++) {
+                if (isSafe(board, row, col, i)) {
+                    board[row][col] = (char)(i + '0');
+                    if (helper(board, nrow, ncol)) return true;
+                    board[row][col] = '.';
+                }
+            }
+        }
+        return false;
+    }
+
+    void solveSudoku(vector<vector<char>>& board) {
+        helper(board, 0, 0);
+    }
+};
